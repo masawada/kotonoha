@@ -1,0 +1,7 @@
+# coding: utf-8
+# Author: Masayoshi Wada (@masawada)
+
+information:
+  api_root_uri: "http://localhost:4423"
+  site_name: "Konotoha"
+  site_uri: "http://localhost/"
