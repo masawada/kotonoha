@@ -3,6 +3,7 @@
 
 require 'sinatra/base'
 require_relative './views/response.rb'
+require_relative './utils/errors.rb'
 
 KOTONOHA_VERSION = 0.1
 KOTONOHA_API_VERSION = 0.1
@@ -17,6 +18,29 @@ module Kotonoha
 
     before do
       content_type :json
+    end
+
+    [ Kotonoha::ERR::BadRequest,
+      Kotonoha::ERR::AuthorizationFailed,
+      Kotonoha::ERR::RequestForbidden,
+      Kotonoha::ERR::UserNotFound,
+      Kotonoha::ERR::LeafNotFound,
+      Kotonoha::ERR::InternalServerError,
+    ].each do |err|
+      error err do
+        status err.code
+        Kotonoha::Response.error(err.code, err.message, params[:callback])
+      end
+    end
+
+    not_found do
+      err = Kotonoha::ERR::NotFound
+      Kotonoha::Response.error(err.code, err.message, params[:callback])
+    end
+
+    error 500 do
+      err = Kotonoha::ERR::InternalServerError
+      Kotonoha::Response.error(err.code, err.message, params[:callback])
     end
 
     # Root
