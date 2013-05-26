@@ -16,7 +16,7 @@ module Kotonoha
     end
 
     before do
-      configure_type :json
+      content_type :json
     end
 
     # Root
