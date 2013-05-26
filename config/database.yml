@@ -1,0 +1,6 @@
+# coding: utf-8
+# Author: Masayoshi Wada (@masawada)
+
+development:
+  adapter: 'sqlite3'
+  database: 'development.db'
