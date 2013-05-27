@@ -43,6 +43,16 @@ module Kotonoha
       Kotonoha::Response.error(err.code, err.message, params[:callback])
     end
 
+    # Auth
+    [ '/statuses/update',
+      %r{$/statuses/destroy/[1-9][0-9]*^}
+    ].each do |route|
+      before route do
+        @auth = Auth.new
+        @auth.authorize?(params)
+      end
+    end
+
     # Root
     get '/' do
       Kotonoha::Response.create({message: "hello, world"}, params[:callback])
