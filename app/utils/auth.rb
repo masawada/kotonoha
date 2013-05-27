@@ -10,6 +10,7 @@ module Kotonoha
       timestamp, queries, signature = split_raw_queries(raw_queries)
       raise ERR::AuthorizationFailed unless time?(timestamp)
       raise ERR::AuthorizationFailed unless permit?(queries, signature)
+      true
     end
 
     def user
