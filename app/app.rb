@@ -20,12 +20,12 @@ module Kotonoha
       content_type :json
     end
 
-    [ Kotonoha::ERR::BadRequest,
-      Kotonoha::ERR::AuthorizationFailed,
-      Kotonoha::ERR::RequestForbidden,
-      Kotonoha::ERR::UserNotFound,
-      Kotonoha::ERR::LeafNotFound,
-      Kotonoha::ERR::InternalServerError,
+    [ ERR::BadRequest,
+      ERR::AuthorizationFailed,
+      ERR::RequestForbidden,
+      ERR::UserNotFound,
+      ERR::LeafNotFound,
+      ERR::InternalServerError,
     ].each do |err|
       error err do
         status err.code
@@ -34,13 +34,13 @@ module Kotonoha
     end
 
     not_found do
-      err = Kotonoha::ERR::NotFound
-      Kotonoha::Response.error(err.code, err.message, params[:callback])
+      err = ERR::NotFound
+      Response.error(err.code, err.message, params[:callback])
     end
 
     error 500 do
-      err = Kotonoha::ERR::InternalServerError
-      Kotonoha::Response.error(err.code, err.message, params[:callback])
+      err = ERR::InternalServerError
+      Response.error(err.code, err.message, params[:callback])
     end
 
     # Auth
@@ -55,7 +55,7 @@ module Kotonoha
 
     # Root
     get '/' do
-      Kotonoha::Response.create({message: "hello, world"}, params[:callback])
+      Response.create({message: "hello, world"}, params[:callback])
     end
   end
 end

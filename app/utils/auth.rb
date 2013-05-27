@@ -8,8 +8,8 @@ module Kotonoha
   class Auth
     def authorize?(raw_queries)
       timestamp, queries, signature = split_raw_queries(raw_queries)
-      raise Kotonoha::ERR::AuthorizationFailed unless time?(timestamp)
-      raise Kotonoha::ERR::AuthorizationFailed unless permit?(queries, signature)
+      raise ERR::AuthorizationFailed unless time?(timestamp)
+      raise ERR::AuthorizationFailed unless permit?(queries, signature)
     end
 
     def user
@@ -37,7 +37,7 @@ module Kotonoha
     def generate_signature(queries)
       begin
         access_key = queries["access"]
-        key = Kotonoha::Models::Key.find_by_access(access_key)
+        key = Models::Key.find_by_access(access_key)
         secret_key = key.secret
         @user = key.user
 
@@ -62,11 +62,11 @@ module Kotonoha
     end
 
     def uri_encode(string)
-      Kotonoha::Utils.uri_encode(string)
+      Utils.uri_encode(string)
     end
 
     def decode_queries(queries)
-      Kotonoha::Utils.decode_queries(queries)
+      Utils.decode_queries(queries)
     end
   end
 end
