@@ -33,7 +33,7 @@ Signature文字列の作成方法について以下に記述する。
 
     String to hash:
       DELETE
-      http://example.com
+      example.com
       /statuses/destroy/1
       access=1-WKZ8aBLXOL9Um1naxss6OJn3uZ5otufXEy8n7g%3D%3D&timestamp=2013-03-12T12%3A18%3A33.117Z
 
