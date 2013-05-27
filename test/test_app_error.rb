@@ -1,11 +1,7 @@
 # coding: utf-8
 # Author: Masayoshi Wada(@masawada)
 
-require_relative '../app/app.rb'
-require 'rack/test'
-require 'json'
-
-class ApplicationTest < Test::Unit::TestCase
+class AppErrorTest < Test::Unit::TestCase
   include Rack::Test::Methods
 
   def app

@@ -4,3 +4,6 @@
 development:
   adapter: 'sqlite3'
   database: 'development.db'
+test:
+  adapter: 'sqlite3'
+  database: 'test.db'
