@@ -51,9 +51,9 @@ module Kotonoha
     end
 
     def self.timeline(queries)
-      max_id = queries["max_id"].to_i
-      since_id = queries["since_id"].to_i
-      count = queries["count"].to_i
+      max_id = queries["max_id"]
+      since_id = queries["since_id"]
+      count = queries["count"]
       count = 20 if count.nil?
 
       begin
@@ -80,6 +80,29 @@ module Kotonoha
       end
 
       { statuses: response_array }
+    end
+
+    def self.show(queries)
+      id = queries["captures"].first.to_i
+
+      begin
+        leaf = Models::Leaf.find(id)
+      rescue ActiveRecord::RecordNotFound
+        raise ERR::LeafNotFound
+      rescue
+        raise ERR::InternalServerError
+      end
+
+      {
+        status: {
+          id: leaf.id,
+          text: leaf.text,
+          user_id: leaf.user.id,
+          user_name: leaf.user.name,
+          favorites: leaf.favorites,
+          timestamp: leaf.created_at.to_i
+        }
+      }
     end
   end
 end
