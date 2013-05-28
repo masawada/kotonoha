@@ -4,6 +4,7 @@
 require 'sinatra/base'
 require_relative './views/response.rb'
 require_relative './utils/errors.rb'
+require_relative './controllers/statuses_controller.rb'
 
 KOTONOHA_VERSION = 0.1
 KOTONOHA_API_VERSION = 0.1
@@ -45,7 +46,7 @@ module Kotonoha
 
     # Auth
     [ '/statuses/update',
-      %r{$/statuses/destroy/[1-9][0-9]*^}
+      %r{^/statuses/destroy/[1-9][0-9]*$}
     ].each do |route|
       before route do
         @auth = Auth.new
@@ -56,6 +57,27 @@ module Kotonoha
     # Root
     get '/' do
       Response.create({message: "hello, world"}, params[:callback])
+    end
+
+    # Statuses
+    post '/statuses/update' do
+      json = StatusesController.update(@auth, params)
+      Response.create(json, params[:callback])
+    end
+
+    post '/statuses/destroy' do
+      json = StatusesController.update(@auth, params)
+      Response.create(json, params[:callback])
+    end
+
+    post '/statuses/timeline' do
+      json = StatusesController.timeline(params)
+      Response.create(json, params[:callback])
+    end
+
+    post %r{^/statuses/show/[1-9][0-9]*$} do
+      json = StatusesController.show(params)
+      Response.create(json, params[:callback])
     end
   end
 end
