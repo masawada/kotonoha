@@ -84,5 +84,9 @@ module Kotonoha
       json = StatusesController.show(params)
       Response.create(json, params[:callback])
     end
+
+    after do
+      ActiveRecord::Base.connection.close
+    end
   end
 end
