@@ -4,6 +4,11 @@
 require 'sinatra/base'
 require_relative './views/response.rb'
 require_relative './utils/errors.rb'
+require_relative './utils/utils.rb'
+require_relative './utils/auth.rb'
+require_relative './models/leaf.rb'
+require_relative './models/key.rb'
+require_relative './models/user.rb'
 require_relative './controllers/statuses_controller.rb'
 
 KOTONOHA_VERSION = 0.1
@@ -13,8 +18,8 @@ module Kotonoha
   class Application < Sinatra::Base
     configure do
       mime_type :json, 'application'
-      #disable :raise_errors
-      #disable :show_exceptions
+      disable :raise_errors
+      disable :show_exceptions
     end
 
     before do
@@ -45,12 +50,12 @@ module Kotonoha
     end
 
     # Auth
-    [ '/statuses/update',
-      %r{^/statuses/destroy/([1-9][0-9]*)$}
+    [ ['/statuses/update', ["text","access","timestamp"]],
+      [%r{^/statuses/destroy/([1-9][0-9]*)$}, ["access", "timestamp"]]
     ].each do |route|
-      before route do
+      before route[0] do
         @auth = Auth.new
-        @auth.authorize?(params)
+        @auth.authorize?(params, route[1], env)
       end
     end
 

@@ -7,7 +7,7 @@ module Kotonoha
   module Utils
     def self.decode_queries(raw_queries)
       queries = {}
-      raw_queries.each{|key, value| queries[key] = self.uri_decode(value) unless key == "captures" || key == "splat"}
+      raw_queries.each{|key, value| queries[key] = self.uri_decode(value) unless key == "captures" || key == "splat" || key == "callback"}
       queries
     end
 

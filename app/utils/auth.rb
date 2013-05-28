@@ -6,10 +6,10 @@ require 'base64'
 
 module Kotonoha
   class Auth
-    def authorize?(raw_queries)
-      timestamp, queries, signature = split_raw_queries(raw_queries)
+    def authorize?(raw_queries, query_keys, env)
+      timestamp, queries, signature = split_raw_queries(raw_queries, query_keys)
       raise ERR::AuthorizationFailed unless time?(timestamp)
-      raise ERR::AuthorizationFailed unless permit?(queries, signature)
+      raise ERR::AuthorizationFailed unless permit?(queries, signature, env)
       true
     end
 
@@ -18,10 +18,14 @@ module Kotonoha
     end
 
     private
-    def split_raw_queries(raw_queries)
-      queries = decode_queries(raw_queries)
-      timestamp = queries["timestamp"]
-      signature = queries.delete("signature")
+    def split_raw_queries(raw_queries, query_keys)
+      queries = {}
+      query_keys.each do |key|
+        queries[key] = raw_queries[key]
+      end
+
+      timestamp = raw_queries["timestamp"]
+      signature = raw_queries["signature"]
 
       return timestamp, queries, signature
     end
@@ -31,12 +35,12 @@ module Kotonoha
       true
     end
 
-    def permit?(queries, signature)
-      signature == generate_signature(queries)
+    def permit?(queries, signature, env)
+      signature == generate_signature(queries, env)
     end
 
-    def generate_signature(queries)
-      begin
+    def generate_signature(queries, env)
+      #begin
         access_key = queries["access"]
         key = Models::Key.find_by_access(access_key)
         secret_key = key.secret
@@ -49,17 +53,17 @@ module Kotonoha
         query_string = encoded_queries.join("&")
 
         string_to_hash = [
-          uri_encode(ENV['REQUEST_METHOD']),
-          uri_encode(ENV['HTTP_HOST']),
-          uri_encode(ENV['REQUEST_PATH']),
+          uri_encode(env['REQUEST_METHOD']),
+          uri_encode(env['HTTP_HOST']),
+          uri_encode(env['REQUEST_PATH']),
           query_string
         ].join("\n")
 
-        hmac = OpenSSL::HMAC::digest(OpenSSL::Digest::SHA256.new, secret_key, string_to_hash)
-        Base64.encode64(hmac).chomp
-      rescue
-        nil
-      end
+        hmac = OpenSSL::HMAC::hexdigest(OpenSSL::Digest::SHA256.new, secret_key, string_to_hash)
+        Base64.strict_encode64(hmac).chomp
+      #rescue
+      #  nil
+      #end
     end
 
     def uri_encode(string)
