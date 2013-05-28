@@ -46,7 +46,7 @@ module Kotonoha
 
     # Auth
     [ '/statuses/update',
-      %r{^/statuses/destroy/[1-9][0-9]*$}
+      %r{^/statuses/destroy/([1-9][0-9]*)$}
     ].each do |route|
       before route do
         @auth = Auth.new
@@ -65,17 +65,17 @@ module Kotonoha
       Response.create(json, params[:callback])
     end
 
-    post '/statuses/destroy' do
-      json = StatusesController.update(@auth, params)
+    delete %r{^/statuses/destroy/([1-9][0-9]*)$} do
+      json = StatusesController.destroy(@auth, params)
       Response.create(json, params[:callback])
     end
 
-    post '/statuses/timeline' do
+    get '/statuses/timeline' do
       json = StatusesController.timeline(params)
       Response.create(json, params[:callback])
     end
 
-    post %r{^/statuses/show/[1-9][0-9]*$} do
+    get %r{^/statuses/show/([1-9][0-9]*)$} do
       json = StatusesController.show(params)
       Response.create(json, params[:callback])
     end
