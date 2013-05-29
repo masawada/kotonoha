@@ -40,7 +40,7 @@ module Kotonoha
     end
 
     def generate_signature(queries, env)
-      #begin
+      begin
         access_key = queries["access"]
         key = Models::Key.find_by_access(access_key)
         secret_key = key.secret
@@ -61,9 +61,9 @@ module Kotonoha
 
         hmac = OpenSSL::HMAC::hexdigest(OpenSSL::Digest::SHA256.new, secret_key, string_to_hash)
         Base64.strict_encode64(hmac).chomp
-      #rescue
-      #  nil
-      #end
+      rescue
+        nil
+      end
     end
 
     def uri_encode(string)
