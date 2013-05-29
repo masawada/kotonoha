@@ -11,6 +11,7 @@ require_relative './models/key.rb'
 require_relative './models/user.rb'
 require_relative './controllers/statuses_controller.rb'
 require_relative './controllers/favorites_controller.rb'
+require_relative './controllers/search_controller.rb'
 
 KOTONOHA_VERSION = 0.1
 KOTONOHA_API_VERSION = 0.1
@@ -83,6 +84,12 @@ module Kotonoha
 
     get %r{^/statuses/show/([1-9][0-9]*)$} do
       json = StatusesController.show(params)
+      Response.create(json, params[:callback])
+    end
+
+    # Search
+    get '/search' do
+      json = SearchController.search(params)
       Response.create(json, params[:callback])
     end
 
