@@ -1,6 +1,8 @@
 # README.md
 
 ## Requirements
+* ruby 1.9.x
+* bundler.gem
 
 ## Installation
 * `git clone https://github.com/masawada/kotonoha.git && cd kotonoha`
